@@ -22,6 +22,7 @@ from .notify import notify_error
 from .notify import notify_info
 from .settings import get_settings
 from .settings import Settings
+from .tools import to_parquet
 
 __version__ = importlib.metadata.version(__name__)
 
@@ -50,4 +51,6 @@ __all__: list[str] = [
     # settings
     "get_settings",
     "Settings",
+    # tools
+    "to_parquet",
 ]
