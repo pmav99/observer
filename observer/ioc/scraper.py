@@ -130,16 +130,11 @@ def retrieve_ioc_data(
                     url=url,
                     client=http_client,
                     rate_limit=rate_limit,
-                )
+                ),
             )
     with http_client:
         logger.debug("Starting data retrieval")
-        results = multifutures.multithread(
-            func=fetch_url,
-            func_kwargs=kwargs,
-            check=False,
-            n_workers=n_threads
-        )
+        results = multifutures.multithread(func=fetch_url, func_kwargs=kwargs, check=False, n_workers=n_threads)
         logger.debug("Finished data retrieval")
     multifutures.check_results(results)
     return results
@@ -197,7 +192,7 @@ def group_results(
             logger.debug("%s: Unique timestamps: %d", ioc_code, len(df))
         else:
             logger.warning("%s: No data. Creating a dummy dataframe", ioc_code)
-            df = pd.DataFrame(columns=["time"], dtype='datetime64[ns]').set_index("time")
+            df = pd.DataFrame(columns=["time"], dtype="datetime64[ns]").set_index("time")
         dataframes[ioc_code] = df
         logger.debug("%s: Finished conversion to pandas", ioc_code)
 
@@ -233,7 +228,7 @@ def scrape_ioc(
     # This is a CPU heavy process, so we are using multiprocessing here
     parsed_responses: list[multifutures.FutureResult] = parse_ioc_responses(
         ioc_responses=ioc_responses,
-        n_processes=n_processes
+        n_processes=n_processes,
     )
 
     # OK, now we have a list of dataframes. We need to group them per ioc_code, concatenate them and remove duplicates

@@ -13,9 +13,6 @@ from .settings import get_settings
 
 logger = logging.getLogger(__name__)
 
-STORAGE_ACCOUNT = "seareport"
-CONTAINER_NAME = "obs"
-
 Credential: T.TypeAlias = azure.identity.ChainedTokenCredential
 CredentialAIO: T.TypeAlias = azure.identity.aio.ChainedTokenCredential
 
@@ -56,7 +53,7 @@ def get_blob_client(
 ) -> BlobServiceClient:
     if not storage_account:
         storage_account = get_settings().storage_account
-    account_url = f"https:{storage_account}.blob.core.windows.net"
+    account_url = f"https://{storage_account}.blob.core.windows.net"
     if credential is None:
         credential = get_credential()
     client = BlobServiceClient(account_url=account_url, credential=credential)

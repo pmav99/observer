@@ -1,15 +1,16 @@
 from __future__ import annotations
 
 import unittest.mock
-from observer.ioc.scraper import scrape_ioc
-from observer.ioc.scraper import scrape_ioc_station
-import  observer.ioc.scraper as scraper
 
 import httpx
 import limits
 import multifutures
 import pandas as pd
 import pytest
+
+import observer.ioc.scraper as scraper
+from observer.ioc.scraper import scrape_ioc
+from observer.ioc.scraper import scrape_ioc_station
 
 
 def test_generate_urls():
@@ -29,8 +30,8 @@ def test_generate_urls():
 
 
 def test_generate_urls_raises_when_end_date_before_start_date():
-    start_date=pd.Timestamp("2023-01-01")
-    end_date=pd.Timestamp("2023-01-01")
+    start_date = pd.Timestamp("2023-01-01")
+    end_date = pd.Timestamp("2023-01-01")
     with pytest.raises(ValueError) as exc:
         scraper.generate_urls(
             ioc_code="aaaa",
@@ -62,7 +63,7 @@ def test_scrape_ioc_empty_responses(mocked_fetch_url):
         f"""[{{"error":"code '{ioc_code}' not found"}}]""",
         f"""[{{"error":"code '{ioc_code}' not found"}}]""",
         '[{"error":"Incorrect code"}]',
-        '[]',
+        "[]",
     ]
     data = scrape_ioc(
         ioc_codes=[ioc_code],
@@ -77,7 +78,7 @@ def test_scrape_ioc_empty_responses(mocked_fetch_url):
 
 @unittest.mock.patch("observer.ioc.scraper.fetch_url")
 def test_scrape_ioc_normal_call(mocked_fetch_url):
-    ioc_code="acnj"
+    ioc_code = "acnj"
     start_date = pd.Timestamp("2022-03-12T11:04:00")
     end_date = pd.Timestamp("2022-03-12T11:06:00")
     mocked_fetch_url.side_effect = [
@@ -101,7 +102,7 @@ def test_scrape_ioc_normal_call(mocked_fetch_url):
 
 @unittest.mock.patch("observer.ioc.scraper.fetch_url")
 def test_scrape_ioc_duplicated_timestamps(mocked_fetch_url):
-    ioc_code="acnj"
+    ioc_code = "acnj"
     start_date = pd.Timestamp("2022-03-12T11:04:00")
     end_date = pd.Timestamp("2022-03-12T11:06:00")
     mocked_fetch_url.side_effect = [
@@ -131,7 +132,7 @@ def test_scrape_ioc_duplicated_timestamps(mocked_fetch_url):
 
 @unittest.mock.patch("observer.ioc.scraper.fetch_url")
 def test_scrape_ioc_station_normal_call(mocked_fetch_url):
-    ioc_code="acnj"
+    ioc_code = "acnj"
     start_date = pd.Timestamp("2022-03-12T11:04:00")
     end_date = pd.Timestamp("2022-03-12T11:06:00")
     mocked_fetch_url.side_effect = [

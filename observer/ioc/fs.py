@@ -3,7 +3,6 @@ from __future__ import annotations
 import logging
 import typing as T
 
-import azure.identity.aio
 import fastparquet
 import pandas as pd
 
@@ -108,5 +107,7 @@ def list_ioc_stations(
     credential: CredentialAIO | None = None,
 ) -> list[str]:
     fs = get_obs_fs(credential=credential)
-    existing = [parquet.split("/")[-1].split(".")[0] for parquet in fs.ls(f"{get_settings().container_name}/ioc/stations")]
+    existing = [
+        parquet.split("/")[-1].split(".")[0] for parquet in fs.ls(f"{get_settings().container_name}/ioc/stations")
+    ]
     return existing
