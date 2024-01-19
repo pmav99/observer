@@ -2383,19 +2383,26 @@ files = [
 
 [[package]]
 name = "multifutures"
-version = "0.2.0"
+version = "0.0.0"
 description = ""
 optional = false
-python-versions = ">=3.9,<4.0"
-files = [
-    {file = "multifutures-0.2.0-py3-none-any.whl", hash = "sha256:5031d56631b3c34f966a8cc6f4788e3d5fb56a845fa9a14d3f44e7ca26d2c9fb"},
-    {file = "multifutures-0.2.0.tar.gz", hash = "sha256:a302a0f6fc226c32741902233c12b3a58dd9b6481132ff21b47714840d120ba0"},
-]
+python-versions = ">=3.9, <4.0"
+files = []
+develop = false
 
 [package.dependencies]
+exceptiongroup = "*"
 limits = "*"
-pydantic = ">2"
 tqdm = "*"
+
+[package.extras]
+full = ["loky", "psutil"]
+
+[package.source]
+type = "git"
+url = "https://github.com/pmav99/multifutures.git"
+reference = "HEAD"
+resolved_reference = "43cf62f2dc50f69ead58941e5f07cf321dacb793"
 
 [[package]]
 name = "mypy"
@@ -4364,4 +4371,4 @@ testing = ["big-O", "jaraco.functools", "jaraco.itertools", "more-itertools", "p
 [metadata]
 lock-version = "2.0"
 python-versions = ">=3.9, <4"
-content-hash = "0d5aee894b9817ce98de2a386d6363cf5330abe375d2fda2b49021bf65b2fb45"
+content-hash = "43c0ad9fa640eb269fc7a12c9367f9e508bc01591ff1e879a290bdc9ddb4fcbc"

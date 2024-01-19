@@ -12,8 +12,8 @@ requires = [
 ]
 build-backend = "poetry_dynamic_versioning.backend"
 
-[tool.poetry.scripts]
-obs = "observer.cli:app"
+# [tool.poetry.scripts]
+# obs = "observer.cli:app"
 
 [tool.poetry.dependencies]
 python = ">=3.9, <4"
@@ -23,14 +23,13 @@ azure-keyvault = "*"
 azure-storage-blob = "*"
 dask = {version = "*", extras = ["complete"]}
 httpx = "*"
-multifutures = "*"
 pandas = "*"
 pydantic-settings = "*"
 searvey = "*"
 tenacity = "*"
-typer = {version = "*", extras = ["all"]}
 xarray = {version = "*", extras = ["accel", "parallel", "io"]}
 fastparquet = {git = "https://github.com/dask/fastparquet/"}
+multifutures = {git = "https://github.com/pmav99/multifutures.git"}
 
 [tool.poetry.group.dev.dependencies]
 covdefaults = "*"
