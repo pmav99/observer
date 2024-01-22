@@ -5,9 +5,13 @@ import typing as T
 from collections import abc
 
 import fastparquet.writer
+import httpx
+import multifutures
 import numpy as np
 import numpy.typing as npt
 import pandas as pd
+import tenacity
+
 
 if T.TYPE_CHECKING:
     from _typeshed import StrPath  # pyright: ignore [reportGeneralTypeIssues]
@@ -170,3 +174,51 @@ def to_parquet(
             partition_cols=partition_cols,
             compression_level=compression_level,
         )
+
+
+def _before_sleep(retry_state: T.Any) -> None:  # pragma: no cover
+    logger.warning(
+        "Retrying %s: attempt %s ended with: %s",
+        retry_state.fn,
+        retry_state.attempt_number,
+        retry_state.outcome,
+    )
+
+
+RETRY = tenacity.retry(
+    stop=(tenacity.stop_after_delay(90) | tenacity.stop_after_attempt(10)),
+    wait=tenacity.wait_random(min=2, max=10),
+    retry=tenacity.retry_if_exception_type(httpx.TransportError),
+    before_sleep=_before_sleep,
+)
+
+
+def _fetch_url(
+    url: str,
+    client: httpx.Client,
+    ioc_code: str = "",
+) -> str:
+    try:
+        response = client.get(url)
+    except Exception:
+        logger.warning("Failed to retrieve: %s", url)
+        raise
+    data = response.text
+    return data
+
+
+@RETRY
+def fetch_url(
+    url: str,
+    client: httpx.Client,
+    rate_limit: multifutures.RateLimit | None = None,
+    ioc_code: str = "",
+) -> str:
+    if rate_limit is not None:
+        while rate_limit.reached():
+            multifutures.wait()  # pragma: no cover
+    return _fetch_url(
+        url=url,
+        client=client,
+        ioc_code=ioc_code,
+    )

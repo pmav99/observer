@@ -2,9 +2,32 @@
 from __future__ import annotations
 
 import fastparquet
+import httpx
+import multifutures
 import pandas as pd
+import pytest
 
+from observer import tools
 from observer.tools import to_parquet
+
+
+def test_fetch_url():
+    url = "https://google.com"
+    response = tools._fetch_url(url, client=httpx.Client())
+    assert "The document has moved" in response
+
+
+def test_fetch_url_failure():
+    url = "http://localhost"
+    with pytest.raises(httpx.ConnectError) as exc:
+        tools._fetch_url(url, client=httpx.Client(timeout=0))
+    assert "in progress" in str(exc)
+
+
+def test_fetch_url_full():
+    url = "https://google.com"
+    response = tools.fetch_url(url, client=httpx.Client(), rate_limit=multifutures.RateLimit())
+    assert "The document has moved" in response
 
 
 def test_to_parquet_single_partition_per_append(tmp_path) -> None:

@@ -11,7 +11,9 @@ import limits
 import multifutures
 import pandas as pd
 import searvey.ioc
-import tenacity
+
+from observer.tools import fetch_url
+
 
 logger = logging.getLogger(__name__)
 
@@ -43,39 +45,6 @@ def generate_urls(
         url = BASE_URL.format(ioc_code=ioc_code, timestart=timestart, timestop=timestop)
         urls.append(url)
     return urls
-
-
-def my_before_sleep(retry_state: T.Any) -> None:
-    logger.warning(
-        "Retrying %s: attempt %s ended with: %s",
-        retry_state.fn,
-        retry_state.attempt_number,
-        retry_state.outcome,
-    )
-
-
-@tenacity.retry(
-    stop=(tenacity.stop_after_delay(90) | tenacity.stop_after_attempt(10)),
-    wait=tenacity.wait_random(min=2, max=10),
-    retry=tenacity.retry_if_exception_type(httpx.TransportError),
-    before_sleep=my_before_sleep,
-)
-def fetch_url(
-    url: str,
-    client: httpx.Client,
-    rate_limit: multifutures.RateLimit,
-    ioc_code: str = "",
-) -> str:
-    while rate_limit.reached(identifier="IOC"):
-        multifutures.wait()
-
-    try:
-        response = client.get(url)
-    except Exception:
-        logger.warning("Failed to retrieve: %s", url)
-        raise
-    data = response.text
-    return data
 
 
 def normalize_df(df: pd.DataFrame) -> pd.DataFrame:

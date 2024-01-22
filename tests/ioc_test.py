@@ -3,12 +3,11 @@ from __future__ import annotations
 import unittest.mock
 
 import httpx
-import limits
 import multifutures
 import pandas as pd
 import pytest
 
-import observer.ioc.scraper as scraper
+from observer.ioc import scraper
 from observer.ioc.scraper import scrape_ioc
 from observer.ioc.scraper import scrape_ioc_station
 
