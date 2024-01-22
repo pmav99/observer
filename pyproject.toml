@@ -21,15 +21,16 @@ adlfs = "*"
 azure-identity = "*"
 azure-keyvault = "*"
 azure-storage-blob = "*"
-dask = {version = "*", extras = ["complete"]}
+dask = {version = "*", extras = ["array", "dataframe", "diagnostics", "distributed", "complete"]}
+geopandas = "*"
 httpx = "*"
+multifutures = "*"
 pandas = "*"
 pydantic-settings = "*"
 searvey = "*"
 tenacity = "*"
 xarray = {version = "*", extras = ["accel", "parallel", "io"]}
 fastparquet = {git = "https://github.com/dask/fastparquet/"}
-multifutures = {git = "https://github.com/pmav99/multifutures.git"}
 
 [tool.poetry.group.dev.dependencies]
 covdefaults = "*"

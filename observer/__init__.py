@@ -18,6 +18,7 @@ from .ioc import list_ioc_stations
 from .ioc import scrape_ioc
 from .ioc import scrape_ioc_station
 from .ioc import write_ioc_df
+from .ioc import write_ioc_metadata
 from .notify import notify_error
 from .notify import notify_info
 from .settings import get_settings
@@ -45,6 +46,7 @@ __all__: list[str] = [
     "scrape_ioc",
     "scrape_ioc_station",
     "write_ioc_df",
+    "write_ioc_metadata",
     # notify
     "notify_error",
     "notify_info",

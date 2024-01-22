@@ -4,6 +4,7 @@ import logging
 import typing as T
 
 import fastparquet
+import geopandas as gpd
 import pandas as pd
 
 from observer.azclients import CredentialAIO
@@ -47,7 +48,30 @@ def get_ioc_metadata(*, credential: CredentialAIO | None = None) -> pd.DataFrame
         storage_options=storage_options,
         engine=settings.engine,
     )
+    if "geometry" not in df.columns:
+        df = df.assign(geometry=gpd.points_from_xy(df.lon, df.lat))
     return df
+
+
+def write_ioc_metadata(*, df: pd.DataFrame, credential: CredentialAIO | None = None) -> None:
+    logger.info("IOC Meta: Starting upload")
+    # GeoPandas (i.e. the `geometry` column) only supports using pyarrow as the engine for to_parquet.
+    # We are using fastparquet, so we need to drop it
+    if "geometry" in df:
+        df = df.drop(columns="geometry")
+    settings = get_settings()
+    uri = _get_metadata_uri()
+    storage_options = get_storage_options(credential=credential)
+    df.to_parquet(  # type: ignore[call-overload]
+        uri,
+        index=True,
+        storage_options=storage_options,
+        engine=settings.engine,
+        compression=_get_compression(compression_level=0),  # type: ignore
+        append=False,
+        custom_metadata={"saved_at": pd.Timestamp.now("utc").isoformat()},
+    )
+    logger.info("IOC Meta: Finished upload")
 
 
 def write_ioc_df(
